@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: github-apk-sensor
+  namespace: argo
+spec:
+  template:
+    serviceAccountName: sensor-sa
+  dependencies:
+    - name: github-push
+      eventSourceName: github-eventsource
+      eventName: github-push
+      
+
+  triggers:
+    - template:
+        name: trigger-apk-workflow
+        argoWorkflow:
+          operation: submit
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: Workflow
+              metadata:
+                generateName: ionic-apk-auto-
+                namespace: argo
+              spec:
+                workflowTemplateRef:
+                  name: ionic-apk-builder
