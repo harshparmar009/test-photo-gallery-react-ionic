@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: ionic-apk-builder
+  namespace: argo
+spec:
+  serviceAccountName: workflow
+  entrypoint: build-apk
+
+  templates:
+    - name: build-apk
+      container:
+        image: harshparmar009/ionic-android-builder:v1
+        imagePullPolicy: Always
+        command: ["/bin/bash", "-c"]
+        args:
+          - |
+            set -e
+
+            echo "1. Clone Ionic project"
+            git clone https://github.com/harshparmar009/test-photo-gallery-react-ionic.git /workspace/app
+
+            cd /workspace/app
+
+            echo "2. Install dependencies"
+            npm ci
+
+            echo "3. Build Ionic web app"
+            npm run build
+
+            echo "4. Sync Capacitor Android"
+            npx cap sync android
+
+            echo "5. Build Android APK"
+            cd android
+            chmod +x gradlew
+            ./gradlew assembleDebug --no-daemon --stacktrace
+
+            echo "6. Copy APK"
+            mkdir -p /tmp/apk
+            cp app/build/outputs/apk/debug/app-debug.apk /tmp/apk/ionic-app-debug.apk
+
+            echo "APK build completed"
+      outputs:
+        artifacts:
+          - name: ionic-apk
+            path: /tmp/apk/ionic-app-debug.apk
+
+            
