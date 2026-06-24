@@ -13,7 +13,7 @@ spec:
         app: ionic-gallery
     spec:
       containers:
-        - name: ionic-gallery
+        - name: ionic-test
           image: harshparmar009/ionic-gallery:v3
           imagePullPolicy: Always
           ports:
