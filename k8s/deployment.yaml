@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ionic-gallery
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ionic-gallery
+  template:
+    metadata:
+      labels:
+        app: ionic-gallery
+    spec:
+      containers:
+        - name: ionic-gallery
+          image: harshparmar009/ionic-gallery:v2
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80

@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ionic-gallery-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: ionic.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ionic-gallery-service
+                port:
+                  number: 80
