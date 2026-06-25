@@ -11,7 +11,7 @@ const Tab2: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Photo Gallery Check</IonTitle>
+          <IonTitle>Photo Gallery by Ares</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>

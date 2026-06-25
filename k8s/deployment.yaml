@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: ionic-test
-          image: harshparmar009/ionic-gallery:v3
+          image: harshparmar009/ionic-gallery:v4
           imagePullPolicy: Always
           ports:
             - containerPort: 80
