@@ -416,7 +416,7 @@ cmd - kubectl get workflows -n argo -w
 A new workflow should appear automatically.
 
 Watch APK build log
-cmd - kubectl logs -n argo <your-ionic-apk-pod> -f
+cmd - kubectl logs -n argo <your-ionic-apk-workflow> -f
 
 
 
