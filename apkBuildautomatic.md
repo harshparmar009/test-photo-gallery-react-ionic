@@ -345,7 +345,16 @@ Expected:
 controller-manager   Running
 
 
-3. Start ngrok
+3. Port-forward the EventSource
+
+Open another terminal:
+
+kubectl port-forward svc/github-eventsource-eventsource-svc -n argo 12000:12000
+
+Keep this terminal open.
+
+
+4. Start ngrok
 
 Open a new terminal:
 
@@ -364,13 +373,6 @@ GitHub
 https://xxxxx.ngrok-free.dev/github
 
 
-4. Port-forward the EventSource
-
-Open another terminal:
-
-kubectl port-forward svc/github-eventsource-eventsource-svc -n argo 12000:12000
-
-Keep this terminal open.
 
 
 5. Start Argo UI

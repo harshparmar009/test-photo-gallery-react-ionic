@@ -1448,6 +1448,9 @@ Logs:
 kubectl logs -n argo ionic-apk-auto-xxxxx -f
 ```
 
+## if you want to **delete** wokrflow 
+cmd - kubectl delete workflow <workflow-pod-name> -n argo
+
 Expected:
 
 ```text
@@ -1583,4 +1586,152 @@ MinIO Artifact
 APK Download
 ```
 
-This removes the need for manual APK generation.
+
+
+**************************************************************************************************
+
+
+**Important**
+
+Order of Starting the CI/CD Pipeline starting from new
+
+
+1. Start Docker Desktop
+
+Open Docker Desktop and wait until:
+
+Engine running
+Kubernetes running
+
+Verify:
+
+kubectl get nodes
+
+Expected:
+
+desktop-control-plane   Ready
+
+
+2. Check Pods
+Argo namespace
+kubectl get pods -n argo
+
+Expected:
+
+argo-server
+workflow-controller
+minio
+github-eventsource
+github-apk-sensor
+eventbus
+Argo Events namespace
+kubectl get pods -n argo-events
+
+Expected:
+
+controller-manager   Running
+
+
+3. Port-forward the EventSource
+
+Open another terminal:
+
+kubectl port-forward svc/github-eventsource-eventsource-svc -n argo 12000:12000
+
+Keep this terminal open.
+
+
+4. Start ngrok
+
+Open a new terminal:
+
+ngrok http 12000
+
+Copy the forwarding URL.
+
+If it changes (free plan), update the GitHub webhook:
+
+GitHub
+→ Settings
+→ Webhooks
+→ Edit
+→ Payload URL
+
+https://xxxxx.ngrok-free.dev/github
+
+
+
+
+5. Start Argo UI
+
+Open another terminal:
+
+kubectl port-forward svc/argo-server -n argo 2746:2746
+
+Open:
+
+https://localhost:2746
+
+
+6. (Optional) Start MinIO
+
+If you want to download APK artifacts:
+
+kubectl port-forward svc/minio -n argo 9000:9000
+
+
+7. Verify Everything
+
+Watch new workflow create
+kubectl get workflows -n argo -w
+
+kubectl get pods -n argo
+kubectl get pods -n argo-events
+
+Everything should be Running (completed workflow pods are expected to show Completed).
+
+
+8. Test the Pipeline
+
+Make a code change:
+
+git add .
+git commit -m "Test"
+git push
+
+
+Watch:
+cmd - kubectl get workflows -n argo -w
+A new workflow should appear automatically.
+
+Watch APK build log
+cmd - kubectl logs -n argo <your-ionic-apk-workflow> -f
+
+
+
+
+
+Daily Startup Checklist
+✅ Start Docker Desktop
+✅ Wait for Kubernetes
+✅ kubectl get nodes
+
+✅ kubectl get pods -n argo
+✅ kubectl get pods -n argo-events
+
+✅ Terminal 1:
+kubectl port-forward svc/github-eventsource-eventsource-svc -n argo 12000:12000
+
+✅ Terminal 2:
+ngrok http 12000
+
+✅ Update GitHub webhook if ngrok URL changed
+
+✅ Terminal 3:
+kubectl port-forward svc/argo-server -n argo 2746:2746
+
+✅ Open https://localhost:2746
+
+✅ Push code and verify a new workflow starts
+
+

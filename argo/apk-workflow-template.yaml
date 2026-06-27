@@ -23,7 +23,7 @@ spec:
             cd /workspace/app
 
             echo "2. Install dependencies"
-            npm ci
+            npm ci --verbose --fetch-timeout=600000 --fetch-retries=5
 
             echo "3. Build Ionic web app"
             npm run build
